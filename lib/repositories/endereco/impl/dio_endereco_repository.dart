@@ -1,5 +1,5 @@
 import 'package:cep_app/models/endereco_model.dart';
-import 'package:cep_app/repositories/endereco_repository.dart';
+import '../endereco_repository.dart';
 import 'package:dio/dio.dart';
 
 class CustonDio {
