@@ -1,4 +1,7 @@
+import 'package:flutter/foundation.dart';
+
 class EnderecoModel {
+  String? _id = UniqueKey().toString();
   String _cep = "";
   String _logradouro = "";
   String _bairro = "";
@@ -6,14 +9,10 @@ class EnderecoModel {
   String _uf = "";
   String _ddd = "";
 
-  EnderecoModel(
-      cep,
-      logradouro,
-      bairro,
-      localidade,
-      uf,
-      ddd);
+  EnderecoModel(cep, logradouro, bairro, localidade, uf, ddd);
 
+  String get id => _id!;
+  set id(String id) => _id = id;
   String get cep => _cep;
   set cep(String cep) => _cep = cep;
   String get logradouro => _logradouro;
@@ -28,6 +27,7 @@ class EnderecoModel {
   set ddd(String ddd) => _ddd = ddd;
 
   EnderecoModel.fromJson(Map<String, dynamic> json) {
+    _id = json['objectId'];
     _cep = json['cep'];
     _logradouro = json['logradouro'];
     _bairro = json['bairro'];
