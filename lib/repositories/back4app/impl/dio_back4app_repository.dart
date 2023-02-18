@@ -5,9 +5,10 @@ import 'dio_back4app_custon.dart';
 class DioBack4AppRepository implements Back4AppRepository {
   final _custonDio = Back4AppCustonDio();
   @override
-  Future<EnderecoModel> obterEnderecoCadastrado() async {
+  Future<List<EnderecoModel>> obterEnderecoCadastrado() async {
     var response = await _custonDio.dio.get("/Cep");
-    return EnderecoModel.fromJson(response.data);
+    print(response.data);
+    return (response.data["results"] as List).map((e) => EnderecoModel.fromJson(e)).toList();
   }
 
   @override
