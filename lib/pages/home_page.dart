@@ -1,4 +1,5 @@
 import 'package:cep_app/models/endereco_model.dart';
+import 'package:cep_app/pages/cep_back4app_page.dart';
 import 'package:cep_app/repositories/back4app/back4app_repository.dart';
 import 'package:cep_app/repositories/back4app/impl/dio_back4app_repository.dart';
 import '../repositories/endereco/endereco_repository.dart';
@@ -63,7 +64,15 @@ class _HomePageState extends State<HomePage> {
       resizeToAvoidBottomInset: false,
       backgroundColor: const Color(0xFFDBDBDB),
       appBar: AppBar(
-        actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.save))],
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const CepBack4AppPage())
+                );
+              },
+              icon: const Icon(Icons.save))
+        ],
         backgroundColor: const Color(0xFF001CBE),
         title: const Center(
             child: Text(
@@ -76,8 +85,8 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           children: [
             SizedBox(
-              height: MediaQuery.of(context).size.height * 0.40,
-              width: MediaQuery.of(context).size.height * 0.40,
+              height: MediaQuery.of(context).size.height * 0.45,
+              width: MediaQuery.of(context).size.width * 0.90,
               child: Card(
                 child: Column(
                   children: [
@@ -91,7 +100,7 @@ class _HomePageState extends State<HomePage> {
                         },
                         children: [
                           Padding(
-                            padding: const EdgeInsets.all(12.0),
+                            padding: const EdgeInsets.all(16.0),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
@@ -132,12 +141,25 @@ class _HomePageState extends State<HomePage> {
                                       setState(() {});
                                     }
                                   },
-                                )
+                                ),
+                                TextButton(
+                                    onPressed: () {
+                                      currentPage++;
+                                      setState(() {
+                                        pageController.animateToPage(
+                                            currentPage,
+                                            duration: const Duration(
+                                                milliseconds: 500),
+                                            curve: Curves.easeInCubic);
+                                      });
+                                    },
+                                    child: Text("Esqueceu o cep?"))
                               ],
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal:16.0),
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 16.0),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
@@ -146,8 +168,48 @@ class _HomePageState extends State<HomePage> {
                                   height: 20,
                                 ),
                                 DropdownButtonFormField(
-                                  icon: const Icon(Icons.arrow_drop_down, color: Color(0xFF001CBE),),
+                                    icon: const Icon(
+                                      Icons.arrow_drop_down,
+                                      color: Color(0xFF001CBE),
+                                    ),
+                                    decoration: const InputDecoration(
+                                      focusedBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Color(0xFF001CBE)),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(20))),
+                                      enabledBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Color(0xFF001CBE)),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(20))),
+                                    ),
+                                    borderRadius: BorderRadius.circular(10),
+                                    menuMaxHeight:
+                                        MediaQuery.of(context).size.height *
+                                            0.3,
+                                    value: valueDropdown,
+                                    items: uf
+                                        .map((e) => DropdownMenuItem(
+                                            value: e,
+                                            child: Text(
+                                              e,
+                                              style: const TextStyle(
+                                                  color: Color(0xFF001CBE)),
+                                            )))
+                                        .toList(),
+                                    onChanged: (String? value) {
+                                      setState(() => valueDropdown = value!);
+                                    }),
+                                const SizedBox(
+                                  height: 15,
+                                ),
+                                TextField(
+                                  controller: cidadeController,
                                   decoration: const InputDecoration(
+                                    labelText: "Digite sua cidade",
+                                    labelStyle:
+                                        TextStyle(color: Color(0xFF001CBE)),
                                     focusedBorder: OutlineInputBorder(
                                         borderSide: BorderSide(
                                             color: Color(0xFF001CBE)),
@@ -159,54 +221,17 @@ class _HomePageState extends State<HomePage> {
                                         borderRadius: BorderRadius.all(
                                             Radius.circular(20))),
                                   ),
-                                  borderRadius: BorderRadius.circular(10),
-                                  menuMaxHeight:
-                                        MediaQuery.of(context).size.height *
-                                            0.3,
-                                    value: valueDropdown,
-                                    items: uf
-                                        .map((e) => DropdownMenuItem(
-                                            value: e, child: Text(e, style: const TextStyle(color: Color(0xFF001CBE)),)))
-                                        .toList(),
-                                    onChanged: (String? value) {
-                                      setState(() => valueDropdown = value!);
-                                    }),
-                                    const SizedBox(height: 15,),
-                                TextField(
-                                  controller: cidadeController,
-                                  decoration: const InputDecoration(
-                                      labelText: "Digite sua cidade",
-                                      labelStyle:TextStyle(color: Color(0xFF001CBE)),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Color(0xFF001CBE)),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(20))),
-                                    enabledBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Color(0xFF001CBE)),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(20))),
-                                      ),
                                 ),
-                                const SizedBox(height: 15,),
+                                const SizedBox(
+                                  height: 15,
+                                ),
                                 TextField(
-                                  onChanged: (value) async {
-                                    if (logradouroController.text.length > 3 &&
-                                        cidadeController.text.length > 3) {
-                                      results = await enderecoRepository
-                                          .obterEnderecoDados(
-                                              valueDropdown,
-                                              cidadeController.text,
-                                              logradouroController.text);
-                                      setState(() {});
-                                    }
-                                  },
                                   controller: logradouroController,
                                   decoration: const InputDecoration(
-                                      labelText: "Digite seu logradouro",
-                                      labelStyle:TextStyle(color: Color(0xFF001CBE)),
-                                      focusedBorder: OutlineInputBorder(
+                                    labelText: "Digite seu logradouro",
+                                    labelStyle:
+                                        TextStyle(color: Color(0xFF001CBE)),
+                                    focusedBorder: OutlineInputBorder(
                                         borderSide: BorderSide(
                                             color: Color(0xFF001CBE)),
                                         borderRadius: BorderRadius.all(
@@ -216,23 +241,36 @@ class _HomePageState extends State<HomePage> {
                                             color: Color(0xFF001CBE)),
                                         borderRadius: BorderRadius.all(
                                             Radius.circular(20))),
-                                      ),
-                                )
+                                  ),
+                                ),
+                                TextButton(
+                                    onPressed: () async {
+                                      if (logradouroController.text.length >
+                                              3 &&
+                                          cidadeController.text.length > 3) {
+                                        results = await enderecoRepository
+                                            .obterEnderecoDados(
+                                                valueDropdown,
+                                                cidadeController.text,
+                                                logradouroController.text);
+                                        setState(() {});
+                                      }
+                                    },
+                                    child: const Text("Pesquisar cep"))
                               ],
                             ),
                           ),
                         ],
                       ),
                     ),
-                    
                   ],
                 ),
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: SizedBox(
-                height: MediaQuery.of(context).size.height * 0.4,
+                height: MediaQuery.of(context).size.height * 0.37,
                 child: ListView.builder(
                     itemCount: results.length,
                     itemBuilder: (_, index) {
@@ -252,7 +290,11 @@ class _HomePageState extends State<HomePage> {
                                   Icons.location_on_outlined,
                                   color: Colors.white,
                                 )),
-                            trailing: IconButton(onPressed: () async => back4appRepository.cadastrarEndereco(results[index]), icon: Icon(Icons.save),),
+                            trailing: IconButton(
+                              onPressed: () async => back4appRepository
+                                  .cadastrarEndereco(results[index]),
+                              icon: Icon(Icons.save),
+                            ),
                           ),
                           const Divider(),
                         ],
