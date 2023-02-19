@@ -2,12 +2,10 @@ import 'package:cep_app/models/endereco_model.dart';
 import 'package:cep_app/pages/cep_back4app_page.dart';
 import 'package:cep_app/repositories/back4app/back4app_repository.dart';
 import 'package:cep_app/repositories/back4app/impl/dio_back4app_repository.dart';
+import 'package:cep_app/repositories/back4app/impl/http_back4app_repository.dart';
 import '../repositories/endereco/endereco_repository.dart';
 import 'package:cep_app/repositories/endereco/impl/dio_endereco_repository.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
-import 'dart:math';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -25,7 +23,7 @@ class _HomePageState extends State<HomePage> {
   PageController pageController = PageController();
   late EnderecoModel enderecoModel;
   EnderecoRepository enderecoRepository = DioEnderecoRepository();
-  Back4AppRepository back4appRepository = DioBack4AppRepository();
+  Back4AppRepository back4appRepository = HttpBack4AppRepository();
   String valueDropdown = "Selecione um UF";
   List<EnderecoModel> results = [];
   final List<String> uf = [
@@ -143,6 +141,8 @@ class _HomePageState extends State<HomePage> {
                                   },
                                 ),
                                 TextButton(
+                                    style: const ButtonStyle(
+                                      backgroundColor: MaterialStatePropertyAll(Color(0xFF001CBE))),
                                     onPressed: () {
                                       currentPage++;
                                       setState(() {
@@ -153,7 +153,7 @@ class _HomePageState extends State<HomePage> {
                                             curve: Curves.easeInCubic);
                                       });
                                     },
-                                    child: Text("Esqueceu o cep?"))
+                                    child: const Text("Esqueceu o cep?", style: TextStyle(color: Colors.white),))
                               ],
                             ),
                           ),
@@ -243,7 +243,12 @@ class _HomePageState extends State<HomePage> {
                                             Radius.circular(20))),
                                   ),
                                 ),
+                                const SizedBox(
+                                  height: 15,
+                                ),
                                 TextButton(
+                                    style: const ButtonStyle(
+                                      backgroundColor: MaterialStatePropertyAll(Color(0xFF001CBE))),
                                     onPressed: () async {
                                       if (logradouroController.text.length >
                                               3 &&
@@ -256,7 +261,7 @@ class _HomePageState extends State<HomePage> {
                                         setState(() {});
                                       }
                                     },
-                                    child: const Text("Pesquisar cep"))
+                                    child: const Text("Pesquisar cep", style: TextStyle(color: Colors.white),))
                               ],
                             ),
                           ),
@@ -293,7 +298,7 @@ class _HomePageState extends State<HomePage> {
                             trailing: IconButton(
                               onPressed: () async => back4appRepository
                                   .cadastrarEndereco(results[index]),
-                              icon: Icon(Icons.save),
+                              icon: const Icon(Icons.save),
                             ),
                           ),
                           const Divider(),

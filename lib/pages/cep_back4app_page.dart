@@ -1,8 +1,6 @@
 import 'package:cep_app/models/endereco_model.dart';
+import 'package:cep_app/repositories/back4app/impl/http_back4app_repository.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
-
 import '../repositories/back4app/back4app_repository.dart';
 import '../repositories/back4app/impl/dio_back4app_repository.dart';
 
@@ -15,7 +13,7 @@ class CepBack4AppPage extends StatefulWidget {
 
 class _CepBack4AppPageState extends State<CepBack4AppPage> {
   List<EnderecoModel> results = [];
-  Back4AppRepository back4appRepository = DioBack4AppRepository();
+  Back4AppRepository back4appRepository = HttpBack4AppRepository();
   @override
   void initState() {
     carregarDados();
@@ -47,7 +45,7 @@ class _CepBack4AppPageState extends State<CepBack4AppPage> {
                     itemBuilder: (_, index) {
                       EnderecoModel result = results[index];
                       return Dismissible(
-                        key: Key(result.id),
+                        key: ObjectKey(result),
                         onDismissed: (DismissDirection direction) async {
                           await back4appRepository.deletarEndereco(result.id);
                           carregarDados();
@@ -77,7 +75,7 @@ class _CepBack4AppPageState extends State<CepBack4AppPage> {
                                     Icons.location_on_outlined,
                                     color: Colors.white,
                                   )),
-                                  trailing: Icon(Icons.arrow_forward_ios),
+                                  trailing: const Icon(Icons.arrow_forward_ios),
                             ));
                     }),
               )
